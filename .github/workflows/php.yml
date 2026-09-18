@@ -1,0 +1,24 @@
+name: PHP CI
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, pdo_mysql
+      - name: Install and Test
+        run: |
+          if [ -f composer.json ]; then
+            composer install --prefer-dist --no-progress
+            vendor/bin/phpunit --if-present
+          else
+            echo "No composer.json found, skipping."
+          fi
